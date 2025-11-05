@@ -48,6 +48,7 @@ const elements = {
     homeVoiceBtn: document.getElementById('homeVoiceBtn'),
     suggestionsScroll: document.getElementById('suggestionsScroll'),
     homeTokenProgress: document.getElementById('homeTokenProgress'),
+    homeCharCount: document.getElementById('homeCharCount'),
     
     // Chat
     chatContainer: document.getElementById('chatContainer'),
@@ -178,6 +179,7 @@ function setupEventListeners() {
     
     elements.homeMessageInput.addEventListener('input', () => {
         autoResizeTextarea(elements.homeMessageInput);
+        updateHomeCharCount();
         updateHomeButtons();
     });
     
@@ -188,6 +190,7 @@ function setupEventListeners() {
             const prompt = card.getAttribute('data-prompt');
             elements.homeMessageInput.value = prompt;
             autoResizeTextarea(elements.homeMessageInput);
+            updateHomeCharCount();
             updateHomeButtons();
             elements.homeMessageInput.focus();
         });
@@ -263,7 +266,13 @@ function autoResizeTextarea(textarea) {
     textarea.style.height = textarea.scrollHeight + 'px';
 }
 
-// Обновление счетчика символов
+// Обновление счетчика символов для главной страницы
+function updateHomeCharCount() {
+    const count = elements.homeMessageInput.value.length;
+    elements.homeCharCount.textContent = `${count} / 4000`;
+}
+
+// Обновление счетчика символов для чата
 function updateCharCount() {
     const count = elements.messageInput.value.length;
     elements.charCount.textContent = `${count} / 4000`;
@@ -1120,5 +1129,31 @@ function stopVoiceRecording() {
     state.speech.currentInput = null;
 }
 
+// Сворачивание клавиатуры при клике вне области ввода (для мобильных устройств)
+function setupKeyboardDismiss() {
+    // Проверяем, является ли устройство мобильным
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (!isMobile) return;
+    
+    // Добавляем обработчик клика на весь документ
+    document.addEventListener('click', (e) => {
+        // Проверяем, что клик был не по полю ввода и не по кнопкам
+        const isInputClick = e.target.closest('textarea, input, button, .input-wrapper, .home-input-wrapper');
+        
+        if (!isInputClick) {
+            // Убираем фокус с активного элемента (сворачивает клавиатуру)
+            if (document.activeElement && 
+                (document.activeElement.tagName === 'TEXTAREA' || 
+                 document.activeElement.tagName === 'INPUT')) {
+                document.activeElement.blur();
+            }
+        }
+    });
+}
+
 // Запуск приложения
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    setupKeyboardDismiss();
+});

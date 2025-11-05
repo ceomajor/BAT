@@ -160,6 +160,11 @@ body {
     z-index: 1;
 }
 
+.home-input-container .input-footer {
+    max-width: 700px;
+    margin: 0.5rem 0 0;
+}
+
 .home-logo {
     font-family: 'Gebuk', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 4rem;
