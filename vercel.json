@@ -15,8 +15,5 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ],
-  "env": {
-    "GIGACHAT_AUTH_KEY": "@gigachat_auth_key"
-  }
+  ]
 }
